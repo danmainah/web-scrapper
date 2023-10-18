@@ -1,0 +1,20 @@
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">Login Here</h1>
+    <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%= message %></div>
+      <% } %>
+    <div class="col-lg-3 mx-auto">
+        <form action="/login" method="POST">
+            <div class="mb-2">
+                <label for="username" >Username</label>
+                <input type="text" class="form-control" name="username" placeholder="Username" required>
+            </div>
+            <div class="mb-2">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+        </form>
+        <p class="mb-2">Dont have an account? <a href="/signup">Signup</a></p>
+    </div>
+</div>

@@ -17,7 +17,7 @@ exports.scrape = async (req, res) => {
   try {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
-    const result  = $('flag-usd').text();
+    const result  = $(sampleData).text();
     scrapped = result
     console.log(scrapped)
    }

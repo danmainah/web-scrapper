@@ -61,6 +61,7 @@ passport.deserializeUser(UserModel.deserializeUser());
     }
   }
 
+app.use('/', checkauthenticated, indexRouter);
 
 
 // catch 404 and forward to error handler

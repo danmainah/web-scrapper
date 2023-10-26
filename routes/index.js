@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const contentController = require("../controllers/contentController");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Web Scrapper' });
-});
+router.get('/', contentController.getContent);
+
+router.post('/scrape', contentController.scrape);
 
 module.exports = router;

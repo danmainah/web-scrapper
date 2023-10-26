@@ -39,9 +39,6 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 
-app.use('/', indexRouter);
-app.use('/', usersRouter);
-
 const UserModel = require('./models/userModel'); //import user model
 
 // Passport Local Strategy
@@ -61,7 +58,9 @@ passport.deserializeUser(UserModel.deserializeUser());
     }
   }
 
+app.use('/', usersRouter);
 app.use('/', checkauthenticated, indexRouter);
+
 
 
 // catch 404 and forward to error handler

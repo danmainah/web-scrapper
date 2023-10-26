@@ -21,8 +21,7 @@ const UserSchema = new Schema({
   role: {
     type: String,
   },
-  activities: [{ type: mongoose.Types.ObjectId, ref: 'Activity' }],
-  categories: [{ type: mongoose.Types.ObjectId, ref: 'Category' }],
+  contents: [{ type: mongoose.Types.ObjectId, ref: 'Content' }],
 });
 // secure password by hashing it
 UserSchema.pre(

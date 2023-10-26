@@ -1,1 +1,39 @@
- 
+<div>
+  <% if (content.length === 0) { %>
+      <p>No Content found.</p>
+  <% } else { %>
+      <% content.forEach(function(item) { %>
+          <div>
+              <a href="/">
+                  <h1><%= content.title %></h1>
+              </a>
+              <ul>
+                <% item.data.forEach(function(obj) { %>
+                  <li><%= obj %></li>
+                <% }); %>
+              </ul>
+            </div>
+      <% }); %>
+  <% } %>
+</div>
+
+<h3>Web Scraper Form</h3>
+<form action="/scrape" method="POST">
+  <div>
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required />
+  </div>
+  <div>
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url" required />
+  </div>
+  <div>
+    <label for="sampleData"
+      >Enter the CSS selector of the data to extract:</label
+    >
+    <input type="text" id="sampleData" name="sampleData" required />
+  </div>
+  <div>
+    <button type="submit">Submit</button>
+  </div>
+</form>

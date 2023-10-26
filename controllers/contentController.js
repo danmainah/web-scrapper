@@ -1,8 +1,10 @@
 const User = require('../models/userModel')
 const Content = require('../models/contentModel')
+const cheerio = require('cheerio')
+const axios = require('axios')
 exports.getContent = async (req, res) => {
   const content = await Content.find();
-  res.render('index', { content: content });
+  res.render('index', { content });
 };
 
 exports.scrape = async (req, res) => {
@@ -18,6 +20,7 @@ exports.scrape = async (req, res) => {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
     const result  = $(sampleData).text();
+    console.log(result)
     scrapped = result
     console.log(scrapped)
    }
@@ -38,7 +41,7 @@ exports.scrape = async (req, res) => {
     // Add content to user posts array
     await User.findOneAndUpdate(
       { _id: id },
-      { $push: { activities: activity } },
+      { $push: { Contents: content } },
     )
 
     // Redirect after successful save
@@ -46,6 +49,6 @@ exports.scrape = async (req, res) => {
   } catch (err) {
     // Handle error
     console.error(err);
-    res.status(500).send('An error occurred while creating the activity');
+    res.status(500).send('An error occurred while saving the scrapped data + ' + err);
   }
 }

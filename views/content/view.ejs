@@ -1,0 +1,21 @@
+<div>
+    <h2><%= content.title %></h2>
+    <table>
+      <thead>
+        <tr>
+          <% Object.keys(content.data[0]).forEach(function(key) { %>
+            <th><%= key %></th>
+          <% }); %>
+        </tr>
+      </thead>
+      <tbody>
+        <% content.data.forEach(function(obj) { %>
+          <tr>
+            <% Object.values(obj).forEach(function(value) { %>
+              <td><%= value %></td>
+            <% }); %>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>

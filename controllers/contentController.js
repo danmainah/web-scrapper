@@ -58,3 +58,10 @@ exports.scrape = async (req, res) => {
     res.status(500).send('An error occurred while saving the scrapped data + ' + err);
   }
 }
+
+exports.getScrapped = async (req, res) => {
+  const filter = { title: req.params.title };
+  const content = await Content.findOne( filter);
+  res.render('content/view', { content });
+};
+

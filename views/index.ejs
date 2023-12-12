@@ -4,8 +4,8 @@
   <% } else { %>
       <% content.forEach(function(item) { %>
           <div>
-              <a href="/">
-                  <h1><%= content.title %></h1>
+              <a href="./content/<%= item.title %>">
+                  <h1><%= item.title %></h1>
               </a>
               <table>
                 <thead>

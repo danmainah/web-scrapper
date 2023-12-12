@@ -12,6 +12,8 @@ require('./auth/auth');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var contentRouter = require('./routes/contentRoute');
+
 const db = require('./connectdb');
 var app = express();
 
@@ -60,6 +62,7 @@ passport.deserializeUser(UserModel.deserializeUser());
 
 app.use('/', usersRouter);
 app.use('/', checkauthenticated, indexRouter);
+app.use('/content', checkauthenticated, contentRouter);
 
 
 

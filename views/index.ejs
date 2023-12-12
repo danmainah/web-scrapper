@@ -7,11 +7,24 @@
               <a href="/">
                   <h1><%= content.title %></h1>
               </a>
-              <ul>
-                <% item.data.forEach(function(obj) { %>
-                  <li><%= obj %></li>
-                <% }); %>
-              </ul>
+              <table>
+                <thead>
+                  <tr>
+                    <% Object.keys(item.data[0]).forEach(function(key) { %>
+                      <th><%= key %></th>
+                    <% }); %>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% item.data.slice(0, 10).forEach(function(obj) { %>
+                    <tr>
+                      <% Object.values(obj).forEach(function(value) { %>
+                        <td><%= value %></td>
+                      <% }); %>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
             </div>
       <% }); %>
   <% } %>
@@ -26,12 +39,6 @@
   <div>
     <label for="url">URL:</label>
     <input type="text" id="url" name="url" required />
-  </div>
-  <div>
-    <label for="sampleData"
-      >Enter the CSS selector of the data to extract:</label
-    >
-    <input type="text" id="sampleData" name="sampleData" required />
   </div>
   <div>
     <button type="submit">Submit</button>

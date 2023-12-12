@@ -8,24 +8,30 @@ exports.getContent = async (req, res) => {
 };
 
 exports.scrape = async (req, res) => {
-  const {title, url, sampleData} = req.body;
+  const {title, url} = req.body;
   const id = req.session.userId;
-  let scrapped 
+  let scrapped = [];
 
-  if(!title || !url || !sampleData) {
-    return res.status(400).send({ error: 'Please provide a title, URL and sample data.' });
+  if(!title || !url) {
+    return res.status(400).send({ error: 'Please provide a title and URL.' });
   }
 
   try {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
-    const result  = $(sampleData).text();
-    console.log(result)
-    scrapped = result
-    console.log(scrapped)
-   }
-    catch (error) {
-      return res.status(500).send({ error: 'An error occurred while scraping.' });
+    $('table tr').each((index, element) => {
+      const tds = $(element).find('td');
+      const tableRow = {};
+      $(tds).each((i, el) => {
+        // Adjust this to match the structure of your table
+        tableRow[`property${i}`] = $(el).text();
+      });
+      scrapped.push(tableRow);
+    });
+    console.log(scrapped);
+  }
+  catch (error) {
+    return res.status(500).send({ error: 'An error occurred while scraping.' });
   }
 
   try {

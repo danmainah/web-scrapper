@@ -3,7 +3,10 @@ const Content = require('../models/contentModel')
 const cheerio = require('cheerio')
 const axios = require('axios')
 exports.getContent = async (req, res) => {
-  const content = await Content.find();
+  const data = await Content.find({});
+  //filter the content to dislay content that belongs to the logged in user
+  const id = req.session.userId;
+  const content = data.filter(content => content.author.toString() === id);
   res.render('index', { content });
 };
 

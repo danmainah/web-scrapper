@@ -1,10 +1,84 @@
+<script>
+function sortTable(n, isNumeric) {
+  const table = document.getElementById("myTable");
+  const rows = Array.from(table.rows);
+  let switching = true;
+  let dir = "asc";
+  let switchcount = 0;
+
+  while (switching) {
+    switching = false;
+
+    for (let i = 1; i < rows.length - 1; i++) {
+      let shouldSwitch = false;
+      const x = rows[i].getElementsByTagName("TD")[n];
+      const y = rows[i + 1].getElementsByTagName("TD")[n];
+
+      if (isNumeric) {
+        if (dir === "asc" && Number(x.innerHTML) > Number(y.innerHTML)) {
+          shouldSwitch = true;
+        } else if (dir === "desc" && Number(x.innerHTML) < Number(y.innerHTML)) {
+          shouldSwitch = true;
+        }
+      } else {
+        if (dir === "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+        } else if (dir === "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+        }
+      }
+
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        switchcount++;
+      }
+    }
+
+    if (!switching && switchcount === 0 && dir === "asc") {
+      dir = "desc";
+      switching = true;
+    }
+  }
+}
+
+function sortAlphabetically() {
+  const column = document.getElementById("sortColumn").value;
+  const headerRow = Array.from(document.getElementById("myTable").rows[1].cells);
+  // const index = headerRow.findIndex(cell => cell.innerText === column);
+  sortTable(1, false);
+}
+
+function sortNumerically() {
+  const sortColumn = document.getElementById("sortColumn").value;
+  const tableRows = Array.from(document.getElementById("myTable").rows[1].cells);
+  // const index = tableRows.findIndex(cell => cell.innerText === sortColumn);
+  sortTable(2, true);
+}
+</script>
+
 <div>
     <h2><%= content.title %></h2>
-    <table>
+    <button onclick="sortAlphabetically()">Sort Alphabetically</button>
+    <button onclick="sortNumerically()">Sort Numerically</button>
+    <form action="/content/<%= content.title %>" method="POST">
+      <input type="hidden" name="_method" value="DELETE">
+      <button type="submit">Delete <%= content.title %></button>
+  </form>
+
+
+    <select id="sortColumn">
+      <% Object.keys(content.data[0]).forEach(function(key) { %>
+        <option value="<%= key %>"><%= key %></option>
+      <% }); %>
+    </select>
+
+    <table id="myTable">
       <thead>
         <tr>
           <% Object.keys(content.data[0]).forEach(function(key) { %>
             <th><%= key %></th>
+            <option value="<%= key %>"><%= key %></option>
           <% }); %>
         </tr>
       </thead>

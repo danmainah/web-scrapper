@@ -62,6 +62,13 @@ exports.scrape = async (req, res) => {
 exports.getScrapped = async (req, res) => {
   const filter = { title: req.params.title };
   const content = await Content.findOne( filter);
+  console.log(content);
   res.render('content/view', { content });
 };
 
+exports.deleteScrapped = async (req, res) => {
+  const filter = { title: req.params.title };
+  const content = await Content.findOneAndDelete( filter);
+  console.log(content);
+  res.redirect('../');
+}

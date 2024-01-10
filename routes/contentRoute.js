@@ -7,6 +7,6 @@ const contentController = require("../controllers/contentController");
 //   router.get("/add", categoryController.createCategoryGet);
 //   router.get("/:category/edit", categoryController.updateCategoryGet);
 //   router.post("/:category/edit",  categoryController.updateCategoryPost);
-//   router.post('/:category', categoryController.deleteCategory);
+  router.post('/:title', contentController.deleteScrapped);
 
 module.exports = router;

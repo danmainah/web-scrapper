@@ -68,6 +68,13 @@ exports.getScrapped = async (req, res) => {
 
 exports.deleteScrapped = async (req, res) => {
   const filter = { title: req.params.title };
+  // Check if the content belongs to the logged in user before delete
+  const id = req.session.userId;
+  const contentAuthor = await Content.findOne( filter);
+  if(contentAuthor.author.toString() !== id) {
+    return res.status(401).send('<h3>You are not authorized to delete this content.</h3><a href="../">Back</a>');
+  }
+  
   const content = await Content.findOneAndDelete( filter);
   console.log(content);
   res.redirect('../');

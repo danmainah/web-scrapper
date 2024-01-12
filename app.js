@@ -15,8 +15,13 @@ var usersRouter = require('./routes/users');
 var contentRouter = require('./routes/contentRoute');
 
 const db = require('./connectdb');
-var app = express();
+const methodOverride = require('method-override');
 
+// Use methodOverride with query value
+
+
+var app = express();
+app.use(methodOverride('_method'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

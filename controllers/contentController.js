@@ -69,6 +69,35 @@ exports.getScrapped = async (req, res) => {
   res.render('content/view', { content });
 };
 
+exports.editScrappedGet = async (req, res) => {
+  const filter = { title: req.params.title };
+  // Check if the content belongs to the logged in user before delete
+  const id = req.session.userId;
+  const contentAuthor = await Content.findOne( filter);
+  if(contentAuthor.author.toString() !== id) {
+    return res.status(401).send('<h3>You are not authorized to edit this content.</h3><a href="../">Back</a>');
+  }
+  const content = await Content.findOne( filter);
+  res.render('content/edit', {content} )
+}
+
+exports.editScrappedPost = async (req, res) => {
+  const { title, data } = req.body;
+
+  try {
+    // Find the document by title and update it with the new title or data
+    const updatedContent = await Content.findOneAndUpdate(
+      { title: title },
+      { $set: { title: title, data: data } },
+      { new: true }
+    );
+
+    res.redirect(`/content/view/${updatedContent.title}`);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
 exports.deleteScrapped = async (req, res) => {
   const filter = { title: req.params.title };
   // Check if the content belongs to the logged in user before delete

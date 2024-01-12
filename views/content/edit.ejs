@@ -1,0 +1,60 @@
+<h2>Editable List</h2>
+
+<form action="/content/<%= content.title %>/edit?_method=POST" method="POST">
+  <label for="title">Title:</label>
+  <input
+    type="text"
+    id="title"
+    name="title"
+    value="<%= content.title %>"
+  />
+  <input type="submit" value="Submit" />
+</form>
+
+<% content.data.forEach(function(obj) { %>
+<ul id="myList">
+  <% Object.values(obj).forEach(function(value) { %>
+  <li><%= value %><button onclick="editItem(this)">Edit</button></li>
+  <!-- Hidden form to edit the selected item -->
+  <form
+    id="editForm"
+    action="/content/<%= content.title %>/edit?_method=PUT"
+    method="POST"
+    style="display: none"
+  >
+    <input type="text" id="editInput" />
+    <button type="button" onclick="saveEdit()">Save</button>
+  </form>
+  <% }); %>
+</ul>
+<% }); %>
+
+<script>
+  // Function to edit an item
+  function editItem(button) {
+    // Get the current text of the list item
+    var currentText = button.parentNode.firstChild.textContent;
+
+    // Set the value of the edit input to the current text
+    document.getElementById("editInput").value = currentText;
+
+    // Store the list item being edited
+    document.getElementById("editForm").currentItem = button.parentNode;
+
+    // Show the edit form
+    document.getElementById("editForm").style.display = "block";
+  }
+
+  // Function to save the edited item
+  function saveEdit() {
+    // Get the new text from the edit input
+    var newText = document.getElementById("editInput").value;
+
+    // Update the list item with the new text
+    document.getElementById("editForm").currentItem.firstChild.textContent =
+      newText;
+
+    // Hide the edit form
+    document.getElementById("editForm").style.display = "none";
+  }
+</script>

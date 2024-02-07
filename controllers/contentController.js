@@ -17,7 +17,7 @@ exports.scrape = async (req, res) => {
   let scrapped = [];
 
   if(!title || !url) {
-    return res.status(400).send({ error: 'Please provide a title and URL.' });
+    return res.status(401).send('<h2>Please provide a title and URL.></h2><a href="./">Back</a');
   }
 
   function isUrl(string) {
@@ -31,7 +31,7 @@ exports.scrape = async (req, res) => {
   }
 
   if (!isUrl(title)) {
-  return res.status(400).send({ error: 'Please provide a valid title. Title should not be a URL.' });
+  return res.status(401).send('<h2>Please provide a valid title. Title should not be a URL.</h2><a href="../">Back</a');
   }
 
 

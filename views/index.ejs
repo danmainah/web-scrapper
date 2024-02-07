@@ -10,9 +10,11 @@
               <table>
                 <thead>
                   <tr>
-                    <% Object.keys(item.data[0]).forEach(function(key) { %>
-                      <th><%= key %></th>
-                    <% }); %>
+                    <% if(item.data && item.data[0]) { %>
+                      <% Object.keys(item.data[0]).forEach(function(key) { %>
+                        <th><%= key %></th>
+                      <% }); %>
+                    <% } %>
                   </tr>
                 </thead>
                 <tbody>

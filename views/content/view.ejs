@@ -57,26 +57,28 @@
     }
   }
 </script>
-
 <div>
   <h2><%= content.title %></h2>
   <button onclick="sortAlphabetically()">Sort Alphabetically</button>
   <button onclick="sortNumerically()">Sort Numerically</button>
-  <form action="/content/<%= content.title %>/delete?_method=DELETE" method="POST">
+  <form
+    action="/content/<%= content.title %>/delete?_method=DELETE"
+    method="POST"
+  >
     <input type="hidden" name="_method" value="DELETE" />
     <button type="submit">Delete <%= content.title %></button>
   </form>
-  <a href="./<%= content.title %>/edit">
-    <h1> Edit </h1>
-  </a>
-  
 
+  <% if (content.data && content.data.length > 0) { %>
+
+  <a href="./<%= content.title %>/edit">
+    <h1>Edit</h1>
+  </a>
   <select id="sortColumn">
     <% Object.keys(content.data[0]).forEach(function(key) { %>
     <option value="<%= key %>"><%= key %></option>
     <% }); %>
   </select>
-
   <table id="myTable">
     <thead>
       <tr>
@@ -96,4 +98,7 @@
       <% }); %>
     </tbody>
   </table>
+  <% } else { %>
+  <h3>This content doesn't have scrapped data</h3>
+  <% } %>
 </div>

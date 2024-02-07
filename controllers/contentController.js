@@ -7,6 +7,7 @@ exports.getContent = async (req, res) => {
   //filter the content to dislay content that belongs to the logged in user
   const id = req.session.userId;
   const content = data.filter(content => content.author.toString() === id);
+  console.log(content)
   res.render('index', { content });
 };
 
@@ -18,6 +19,21 @@ exports.scrape = async (req, res) => {
   if(!title || !url) {
     return res.status(400).send({ error: 'Please provide a title and URL.' });
   }
+
+  function isUrl(string) {
+    const urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '(((a-z\\d*)\\.)+[a-z]{2,}|'+ // domain name and extension
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return urlPattern.test(string);
+  }
+
+  if (!isUrl(title)) {
+  return res.status(400).send({ error: 'Please provide a valid title. Title should not be a URL.' });
+  }
+
 
   try {
     const { data } = await axios.get(url);
@@ -38,6 +54,9 @@ exports.scrape = async (req, res) => {
   }
 
   try {
+    if (!scrapped || scrapped.length === 0) {
+      return res.status(400).send('No scrapped data to save');
+    }
     // Save the scrapped data
     const content = new Content({
       title: req.body.title,
@@ -56,7 +75,10 @@ exports.scrape = async (req, res) => {
     // Redirect after successful save
     res.redirect('./');
   } catch (err) {
-    // Handle error
+    // Handle error but check if error first include  E11000 duplicate key error 
+    if(err.code === 11000) {
+      return res.status(400).send('Title already used by another scrapped content');
+    }
     console.error(err);
     res.status(500).send('An error occurred while saving the scrapped data + ' + err);
   }
@@ -82,13 +104,29 @@ exports.editScrappedGet = async (req, res) => {
 }
 
 exports.editScrappedPost = async (req, res) => {
+  const cont = await Content.find({});
+  //filter the content to dislay content that belongs to the logged in user
+  const id = req.session.userId;
+  const content = cont.filter(content => content.author.toString() === id);
+
   const { title, data } = req.body;
+  let update = {};
+
+  // Check if title exists in the request body
+  if (title !== undefined) {
+    update.title = content.title;
+  }
+
+  // Check if data exists in the request body
+  if (data !== undefined) {
+    update.data = content.data;
+  }
 
   try {
     // Find the document by title and update it with the new title or data
     const updatedContent = await Content.findOneAndUpdate(
       { title: title },
-      { $set: { title: title, data: data } },
+      { $set: update },
       { new: true }
     );
 

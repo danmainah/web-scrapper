@@ -1,60 +1,109 @@
-<h2>Editable List</h2>
-
-<form action="/content/<%= content.title %>/edit?_method=POST" method="POST">
-  <label for="title">Title:</label>
-  <input
-    type="text"
-    id="title"
-    name="title"
-    value="<%= content.title %>"
-  />
-  <input type="submit" value="Submit" />
-</form>
-
-<% content.data.forEach(function(obj) { %>
-<ul id="myList">
-  <% Object.values(obj).forEach(function(value) { %>
-  <li><%= value %><button onclick="editItem(this)">Edit</button></li>
-  <!-- Hidden form to edit the selected item -->
-  <form
-    id="editForm"
-    action="/content/<%= content.title %>/edit?_method=PUT"
-    method="POST"
-    style="display: none"
-  >
-    <input type="text" id="editInput" />
-    <button type="button" onclick="saveEdit()">Save</button>
-  </form>
-  <% }); %>
-</ul>
-<% }); %>
-
 <script>
-  // Function to edit an item
-  function editItem(button) {
-    // Get the current text of the list item
-    var currentText = button.parentNode.firstChild.textContent;
-
-    // Set the value of the edit input to the current text
-    document.getElementById("editInput").value = currentText;
-
-    // Store the list item being edited
-    document.getElementById("editForm").currentItem = button.parentNode;
-
-    // Show the edit form
-    document.getElementById("editForm").style.display = "block";
+  function sortAlphabetically() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("myTable");
+    switching = true;
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      for (i = 1; i < rows.length - 1; i++) {
+        shouldSwitch = false;
+        x =
+          rows[i].getElementsByTagName("TD")[
+            document.getElementById("sortColumn").selectedIndex
+          ];
+        y =
+          rows[i + 1].getElementsByTagName("TD")[
+            document.getElementById("sortColumn").selectedIndex
+          ];
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
   }
 
-  // Function to save the edited item
-  function saveEdit() {
-    // Get the new text from the edit input
-    var newText = document.getElementById("editInput").value;
-
-    // Update the list item with the new text
-    document.getElementById("editForm").currentItem.firstChild.textContent =
-      newText;
-
-    // Hide the edit form
-    document.getElementById("editForm").style.display = "none";
+  function sortNumerically() {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("myTable");
+    switching = true;
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      for (i = 1; i < rows.length - 1; i++) {
+        shouldSwitch = false;
+        x =
+          rows[i].getElementsByTagName("TD")[
+            document.getElementById("sortColumn").selectedIndex
+          ];
+        y =
+          rows[i + 1].getElementsByTagName("TD")[
+            document.getElementById("sortColumn").selectedIndex
+          ];
+        if (Number(x.innerHTML) > Number(y.innerHTML)) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
   }
 </script>
+<div>
+  <h2><%= content.title %></h2>
+  <button onclick="sortAlphabetically()">Sort Alphabetically</button>
+  <button onclick="sortNumerically()">Sort Numerically</button>
+  <form
+    action="/content/<%= content.title %>/delete?_method=DELETE"
+    method="POST"
+  >
+    <input type="hidden" name="_method" value="DELETE" />
+    <button type="submit">Delete <%= content.title %></button>
+  </form>
+
+  <% if (content.data && content.data.length > 0) { %>
+  <select id="sortColumn">
+    <% Object.keys(content.data[0]).forEach(function(key) { %>
+    <option value="<%= key %>"><%= key %></option>
+    <% }); %>
+  </select>
+  <table id="myTable">
+    <thead>
+      <tr>
+        <% Object.keys(content.data[0]).forEach(function(key) { %>
+        <th><%= key %></th>
+        <option value="<%= key %>"><%= key %></option>
+        <% }); %>
+      </tr>
+    </thead>
+    <tbody>
+      <% content.data.forEach(function(obj) { %>
+      <tr>
+        <% Object.values(obj).forEach(function(value) { %>
+        <td><%= value %></td>
+        <% }); %>
+        <td>
+          <form
+            action="/content/<%= content.title %>/edit?_method=PUT"
+            method="POST"
+          >
+            <input type="hidden" name="_method" value="PUT" />
+            <button type="submit">Edit</button>
+          </form>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <h3>This content doesn't have scrapped data</h3>
+  <% } %>
+</div>

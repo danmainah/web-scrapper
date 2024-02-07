@@ -6,12 +6,12 @@ passport.use(
     'login',
     new localStrategy(
       {
-        usernameField: 'username',
+        usernameField: 'email',
         passwordField: 'password'
       },
-      async (username, password, done) => {
+      async (email, password, done) => {
         try {
-          const user = await UserModel.findOne({ username });
+          const user = await UserModel.findOne({ email });
   
           if (!user) {
             return done(null, false, { message: 'User not found' });
@@ -32,28 +32,27 @@ passport.use(
   
   
   passport.use(
-      'signup',
-      new localStrategy(
-        {
-          usernameField: 'username',
-          emailField: 'email',
-          passwordField: 'password',
-          passReqToCallback: true,
-        },
-        async ( req, email, password, done) => {
-          try {
-            const user = await UserModel.create({username: req.body.username, email, password});
-    
-            return done(null, user);
-          } catch (error) {
-            if (error.message && error.message.includes("E11000 duplicate key error")) {
-              // handle duplicate key error
-              return done({ message: 'User already registered'} );
-            } else {
-              // handle other errors
-              done(error);
-            }
+    'signup',
+    new localStrategy(
+      {
+        usernameField: 'email', // use 'email' field as username
+        passwordField: 'password',
+        passReqToCallback: true,
+      },
+      async ( req, email, password, done) => {
+        try {
+          const user = await UserModel.create({username: req.body.username, email, password});
+          return done(null, user);
+        } catch (error) {
+          if (error.message && error.message.includes("E11000 duplicate key error")) {
+            // handle duplicate key error
+            return done({ message: 'User already registered'} );
+          } else {
+            // handle other errors
+            done(error);
           }
         }
-      )
-    );
+      }
+    )
+  );
+  

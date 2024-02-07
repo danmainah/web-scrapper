@@ -14,6 +14,7 @@ exports.getContent = async (req, res) => {
 exports.scrape = async (req, res) => {
   const {title, url} = req.body;
   const id = req.session.userId;
+  console.log(id)
   let scrapped = [];
 
   if(!title || !url) {
@@ -30,7 +31,7 @@ exports.scrape = async (req, res) => {
     return urlPattern.test(string);
   }
 
-  if (!isUrl(title)) {
+  if (isUrl(title)) {
   return res.status(401).send('<h2>Please provide a valid title. Title should not be a URL.</h2><a href="../">Back</a');
   }
 
@@ -80,7 +81,7 @@ exports.scrape = async (req, res) => {
       return res.status(400).send('Title already used by another scrapped content');
     }
     console.error(err);
-    res.status(500).send('An error occurred while saving the scrapped data + ' + err);
+    res.status(500).send('An error occurred while saving the scrapped data + ' + err + ' <a href="../">Back</a' );
   }
 }
 

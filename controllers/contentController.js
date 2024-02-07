@@ -6,9 +6,12 @@ exports.getContent = async (req, res) => {
   const data = await Content.find({});
   //filter the content to dislay content that belongs to the logged in user
   const id = req.session.userId;
+  const user =  await User.findOne({ _id: id });
+  const username = user.username
   const content = data.filter(content => content.author.toString() === id);
-  console.log(content)
-  res.render('index', { content });
+  res.locals.username = username; 
+  console.log(username)
+  res.render('index', { content});
 };
 
 exports.scrape = async (req, res) => {

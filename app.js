@@ -8,6 +8,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const dbpath = require('./dbkey');
 const flash = require('connect-flash');
+const expressLayouts = require('express-ejs-layouts')
 require('./auth/auth');
 
 var indexRouter = require('./routes/index');
@@ -22,6 +23,9 @@ const methodOverride = require('method-override');
 
 var app = express();
 app.use(methodOverride('_method'));
+// setup the layout
+app.use(expressLayouts)
+app.set('layout', './layouts/main')
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
